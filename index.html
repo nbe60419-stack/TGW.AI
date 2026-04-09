@@ -1,47 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>TGW.AI</title>
-  <style>
-    body {
-      background: #0f0f0f;
-      color: white;
-      font-family: Arial;
-      text-align: center;
-      padding: 50px;
-    }
-    input {
-      width: 80%;
-      padding: 10px;
-      border-radius: 10px;
-      border: none;
-    }
-    button {
-      padding: 10px 20px;
-      border-radius: 10px;
-      border: none;
-      background: #00ffcc;
-      margin-top: 10px;
-    }
-  </style>
-</head>
-<body>
+<script>
+function chat() {
+  let input = document.getElementById("input");
+  let output = document.getElementById("output");
 
-  <h1>🤖 TGW.AI</h1>
-  <p>Trợ lý AI của Văn</p>
+  let text = input.value.trim().toLowerCase();
 
-  <input id="input" placeholder="Nhập gì đó..." />
-  <br>
-  <button onclick="chat()">Gửi</button>
+  if (text === "") {
+    output.innerText = "TGW.AI: Bạn chưa nhập gì!";
+    return;
+  }
 
-  <p id="output"></p>
+  let reply = "";
 
-  <script>
-    function chat() {
-      let text = document.getElementById("input").value;
-      document.getElementById("output").innerText = "TGW.AI: Bạn vừa nói: " + text;
-    }
-  </script>
+  if (text.includes("xin chào")) {
+    reply = "Chào Văn 👋";
+  } 
+  else if (text.includes("bạn là ai")) {
+    reply = "Tôi là TGW.AI - trợ lý của Văn 🤖";
+  } 
+  else if (text.includes("khỏe không")) {
+    reply = "Tôi luôn hoạt động ổn định 🔥";
+  } 
+  else if (text.includes("tgw")) {
+    reply = "TG.WHIET-STUDIO là hệ thống của Văn 💻";
+  } 
+  else {
+    reply = "Tôi chưa hiểu... hãy dạy tôi thêm!";
+  }
 
-</body>
-</html>
+  output.innerText = "TGW.AI: " + reply;
+}
+</script>
