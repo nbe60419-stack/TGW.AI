@@ -9,23 +9,54 @@
       background: #0f0f0f;
       color: white;
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
+      margin: 0;
+    }
+
+    #chat {
+      height: 90vh;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg {
+      max-width: 70%;
+      padding: 10px;
+      margin: 5px;
+      border-radius: 10px;
+    }
+
+    .user {
+      background: #00ffcc;
+      color: black;
+      align-self: flex-end;
+    }
+
+    .bot {
+      background: #222;
+      align-self: flex-start;
+    }
+
+    #inputBox {
+      display: flex;
+      padding: 10px;
+      background: #111;
     }
 
     input {
-      width: 80%;
+      flex: 1;
       padding: 10px;
       border-radius: 10px;
       border: none;
     }
 
     button {
-      padding: 10px 20px;
+      margin-left: 10px;
+      padding: 10px;
       border-radius: 10px;
       border: none;
       background: #00ffcc;
-      margin-top: 10px;
       cursor: pointer;
     }
   </style>
@@ -33,33 +64,51 @@
 
 <body>
 
-  <h1>🤖 TGW.AI</h1>
-  <p>Trợ lý AI của Văn</p>
+  <div id="chat"></div>
 
-  <input id="input" placeholder="Nhập gì đó..." />
-  <br><br>
-
-  <button onclick="chat()">Gửi</button>
-
-  <p id="output"></p>
+  <div id="inputBox">
+    <input id="input" placeholder="Nhập tin nhắn..." />
+    <button onclick="chat()">Gửi</button>
+  </div>
 
   <script>
+    function addMessage(text, type) {
+      let msg = document.createElement("div");
+      msg.className = "msg " + type;
+      msg.innerText = text;
+      document.getElementById("chat").appendChild(msg);
+
+      document.getElementById("chat").scrollTop = 
+        document.getElementById("chat").scrollHeight;
+    }
+
     function chat() {
-      let text = document.getElementById("input").value.toLowerCase();
+      let input = document.getElementById("input");
+      let text = input.value.trim().toLowerCase();
+
+      if (text === "") return;
+
+      addMessage(text, "user");
+
       let reply = "";
 
       if (text.includes("xin chào")) {
         reply = "Chào Văn 👋";
       } else if (text.includes("bạn là ai")) {
         reply = "Tôi là TGW.AI 🤖";
-      } else if (text.includes("khỏe không")) {
-        reply = "Tôi luôn ổn định 🔥";
+      } else if (text.includes("tgw")) {
+        reply = "TG.WHIET-STUDIO là hệ thống của bạn 🔥";
       } else {
-        reply = "Tôi chưa hiểu... hãy dạy tôi thêm!";
+        reply = "Tôi đang học thêm... hãy dạy tôi!";
       }
 
-      document.getElementById("output").innerText = "TGW.AI: " + reply;
+      setTimeout(() => {
+        addMessage(reply, "bot");
+      }, 500);
+
+      input.value = "";
     }
   </script>
 
 </body>
+</html>
