@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TGW.AI</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      padding: 50px;
+    }
+    input {
+      width: 80%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+    }
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: none;
+      background: #00ffcc;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🤖 TGW.AI</h1>
+  <p>Trợ lý AI của Văn</p>
+
+  <input id="input" placeholder="Nhập gì đó..." />
+  <br>
+  <button onclick="chat()">Gửi</button>
+
+  <p id="output"></p>
+
+  <script>
+    function chat() {
+      let text = document.getElementById("input").value;
+      document.getElementById("output").innerText = "TGW.AI: Bạn vừa nói: " + text;
+    }
+  </script>
+
+</body>
+</html>
