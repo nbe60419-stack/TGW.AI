@@ -69,7 +69,7 @@
   <div id="inputBox">
     <input id="input" placeholder="Nhập hoặc nói..." />
     <button onclick="chat()">Gửi</button>
-    <button onclick="voice()">🎤</button>
+    <button onclick="startVoice()">🎤</button>
   </div>
 
   <script>
@@ -90,30 +90,33 @@
       speech.lang = "vi-VN";
       speech.rate = 1;
       speech.pitch = 1;
+      speechSynthesis.cancel();
       speechSynthesis.speak(speech);
     }
 
     function getReply(text) {
       if (text.includes("xin chào")) return "Chào Văn 👋";
       if (text.includes("bạn là ai")) return "Tôi là TGW.AI 🤖";
+
       if (text.includes("tên tôi là")) {
         let name = text.replace("tên tôi là", "").trim();
         memory.push(name);
         return "Tôi sẽ nhớ bạn là " + name;
       }
+
       if (text.includes("tôi là ai")) {
-        if (memory.length > 0) {
-          return "Bạn là " + memory[memory.length - 1];
-        } else {
-          return "Tôi chưa biết bạn là ai.";
-        }
+        return memory.length > 0
+          ? "Bạn là " + memory[memory.length - 1]
+          : "Tôi chưa biết bạn là ai";
       }
+
       return "Tôi đang học thêm... hãy dạy tôi!";
     }
 
     function chat() {
       let input = document.getElementById("input");
       let text = input.value.trim().toLowerCase();
+
       if (text === "") return;
 
       addMessage(text, "user");
@@ -123,19 +126,47 @@
       setTimeout(() => {
         addMessage(reply, "bot");
         speak(reply);
-      }, 500);
+      }, 400);
 
       input.value = "";
     }
 
-    function voice() {
-      let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    // 🎤 Voice chuẩn nhất cho web
+    function startVoice() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Máy không hỗ trợ mic 😢");
+        return;
+      }
+
+      let recognition = new webkitSpeechRecognition();
       recognition.lang = "vi-VN";
+      recognition.continuous = true;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        console.log("🎤 Đang nghe...");
+      };
 
       recognition.onresult = function(event) {
-        let text = event.results[0][0].transcript.toLowerCase();
-        document.getElementById("input").value = text;
-        chat();
+        let text = event.results[event.results.length - 1][0].transcript.toLowerCase();
+
+        addMessage(text, "user");
+
+        let reply = getReply(text);
+
+        setTimeout(() => {
+          addMessage(reply, "bot");
+          speak(reply);
+        }, 400);
+      };
+
+      recognition.onerror = function(e) {
+        console.log("Lỗi mic:", e.error);
+      };
+
+      recognition.onend = function() {
+        // 🔥 auto restart → luôn nghe
+        startVoice();
       };
 
       recognition.start();
