@@ -1,45 +1,486 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TG.AI // TG.WHIET-STUDIO</title>
 
-      
-package com.tgwhietstudio.tgwai;
+<style>
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.content.Intent;
-import android.speech.RecognizerIntent;
-import android.widget.Toast;
-import java.util.ArrayList;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-public class MainActivity extends Activity {
+body{
+    background:#050816;
+    overflow:hidden;
+    font-family:Arial;
+    color:white;
+}
 
-    @Override
-    protected void onCreate(Bundle b) {
-        super.onCreate(b);
+/* BACKGROUND */
 
-        Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "vi-VN");
-        startActivityForResult(i, 1);
+.bg{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:
+    radial-gradient(circle at center,
+    rgba(0,255,255,0.08),
+    transparent 60%);
+    animation:bgPulse 6s infinite;
+}
+
+@keyframes bgPulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.05);}
+    100%{transform:scale(1);}
+}
+
+/* TOP */
+
+.top{
+    position:absolute;
+    top:20px;
+    width:100%;
+    text-align:center;
+    z-index:2;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+    letter-spacing:2px;
+    color:#00E5FF;
+    text-shadow:0 0 20px #00E5FF;
+}
+
+.status{
+    margin-top:5px;
+    font-size:13px;
+    opacity:0.7;
+}
+
+/* AVATAR */
+
+.avatarBox{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-55%);
+    width:240px;
+    height:240px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    backdrop-filter:blur(10px);
+
+    box-shadow:
+    0 0 40px rgba(0,229,255,0.2),
+    inset 0 0 30px rgba(0,229,255,0.08);
+}
+
+.avatarGlow{
+    position:absolute;
+    width:270px;
+    height:270px;
+    border-radius:50%;
+    border:2px solid rgba(0,229,255,0.15);
+    animation:rotate 8s linear infinite;
+}
+
+@keyframes rotate{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
+}
+
+.avatar{
+    width:180px;
+    transition:0.15s;
+    filter:drop-shadow(0 0 20px #00E5FF);
+}
+
+/* WAVES */
+
+.wave{
+    position:absolute;
+    width:280px;
+    height:280px;
+    border-radius:50%;
+    border:1px solid rgba(0,229,255,0.08);
+    animation:wave 4s infinite;
+}
+
+.wave:nth-child(2){
+    animation-delay:1s;
+}
+
+.wave:nth-child(3){
+    animation-delay:2s;
+}
+
+@keyframes wave{
+    from{
+        transform:scale(0.7);
+        opacity:1;
     }
-
-    @Override
-    protected void onActivityResult(int r, int c, Intent d) {
-        super.onActivityResult(r, c, d);
-
-        if (r == 1 && c == RESULT_OK && d != null) {
-
-            ArrayList<String> t =
-            d.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-
-            if (t != null && t.size() > 0) {
-
-                String s = t.get(0).toLowerCase();
-
-                Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-
-                if (s.contains("youtube")) {
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                    android.net.Uri.parse("https://youtube.com")));
-                }
-            }
-        }
+    to{
+        transform:scale(1.4);
+        opacity:0;
     }
 }
+
+/* CHAT */
+
+.chat{
+    position:absolute;
+    bottom:110px;
+    width:100%;
+    padding:15px;
+    max-height:30vh;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+}
+
+.msg{
+    max-width:75%;
+    padding:12px;
+    margin:5px;
+    border-radius:15px;
+    animation:fade 0.2s;
+}
+
+.user{
+    align-self:flex-end;
+    background:#00E5FF;
+    color:black;
+}
+
+.bot{
+    align-self:flex-start;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(0,229,255,0.2);
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* INPUT */
+
+.inputBox{
+    position:absolute;
+    bottom:20px;
+    width:100%;
+    display:flex;
+    gap:10px;
+    padding:12px;
+}
+
+input{
+    flex:1;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:rgba(255,255,255,0.05);
+    color:white;
+    outline:none;
+}
+
+button{
+    border:none;
+    border-radius:14px;
+    padding:14px 18px;
+    background:#00E5FF;
+    color:black;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="top">
+    <div class="logo">TG.AI</div>
+
+    <div class="status" id="status">
+        SYSTEM READY
+    </div>
+</div>
+
+<div class="avatarBox">
+
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+
+    <div class="avatarGlow"></div>
+
+    <!-- THAY ẢNH AVATAR -->
+    <img
+    id="avatar"
+    class="avatar"
+    src="https://i.imgur.com/Z7AzH2c.png">
+
+</div>
+
+<div class="chat" id="chat"></div>
+
+<div class="inputBox">
+
+    <input
+    id="input"
+    placeholder="Nhập lệnh...">
+
+    <button onclick="send()">
+        Gửi
+    </button>
+
+    <button onclick="voice()">
+        🎤
+    </button>
+
+</div>
+
+<script>
+
+/* =========================
+   TG.AI CONFIG
+========================= */
+
+const TG = {
+
+    mood:"neutral",
+
+    memory:[],
+
+    // 🔥 DÁN API KEY TẠI ĐÂY
+    apiKey:"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",
+
+    // 🔥 MODEL FREE
+    model:
+    "mistralai/mistral-7b-instruct:free",
+
+    add(text,type){
+
+        let msg=document.createElement("div");
+
+        msg.className="msg "+type;
+
+        msg.innerText=text;
+
+        document
+        .getElementById("chat")
+        .appendChild(msg);
+
+        chat.scrollTop=chat.scrollHeight;
+    },
+
+    speak(text){
+
+        let tts=
+        new SpeechSynthesisUtterance(text);
+
+        tts.lang="vi-VN";
+        tts.rate=0.95;
+        tts.pitch=1.08;
+
+        // fake lip sync
+        let avatar=
+        document.getElementById("avatar");
+
+        let interval=setInterval(()=>{
+
+            avatar.style.transform=
+            `scale(${1+Math.random()*0.03})`;
+
+        },120);
+
+        tts.onend=()=>{
+
+            clearInterval(interval);
+
+            avatar.style.transform=
+            "scale(1)";
+        };
+
+        speechSynthesis.cancel();
+
+        speechSynthesis.speak(tts);
+    },
+
+    async askAI(text){
+
+        try{
+
+            let response =
+            await fetch(
+            "https://openrouter.ai/api/v1/chat/completions",
+            {
+
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json",
+
+                    "Authorization":
+                    "Bearer "+this.apiKey
+                },
+
+                body:JSON.stringify({
+
+                    model:this.model,
+
+                    messages:[
+
+                        {
+                            role:"system",
+
+                            content:
+`
+Bạn là TG.AI.
+
+Phong cách:
+- Bình tĩnh
+- Ngắn gọn
+- Có chiều sâu
+- Không nói quá nhiều
+- Studio/Gaming vibe
+`
+                        },
+
+                        {
+                            role:"user",
+                            content:text
+                        }
+                    ]
+                })
+            });
+
+            let data=
+            await response.json();
+
+            return data
+            .choices[0]
+            .message.content;
+
+        }catch(e){
+
+            return "Lỗi kết nối AI.";
+        }
+    }
+};
+
+/* =========================
+   SEND
+========================= */
+
+async function send(){
+
+    let input=
+    document.getElementById("input");
+
+    let text=
+    input.value.trim();
+
+    if(!text) return;
+
+    TG.add(text,"user");
+
+    document
+    .getElementById("status")
+    .innerText=
+    "THINKING...";
+
+    input.value="";
+
+    // AI
+    let reply=
+    await TG.askAI(text);
+
+    setTimeout(()=>{
+
+        TG.add(reply,"bot");
+
+        TG.speak(reply);
+
+        document
+        .getElementById("status")
+        .innerText=
+        "ACTIVE";
+
+    },300);
+}
+
+/* =========================
+   VOICE
+========================= */
+
+function voice(){
+
+    if(!(
+    'webkitSpeechRecognition'
+    in window
+    )){
+        alert("Không hỗ trợ voice");
+        return;
+    }
+
+    let rec=
+    new webkitSpeechRecognition();
+
+    rec.lang="vi-VN";
+
+    rec.onresult=(e)=>{
+
+        let text=
+        e.results[0][0]
+        .transcript;
+
+        document
+        .getElementById("input")
+        .value=text;
+
+        send();
+    };
+
+    rec.start();
+}
+
+/* =========================
+   BLINK
+========================= */
+
+setInterval(()=>{
+
+    let avatar=
+    document.getElementById("avatar");
+
+    avatar.style.opacity=0.4;
+
+    setTimeout(()=>{
+
+        avatar.style.opacity=1;
+
+    },120);
+
+},3500);
+
+</script>
+
+</body>
+</html>
