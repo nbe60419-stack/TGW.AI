@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>TG.AI</title>
 
 <style>
@@ -11,11 +13,11 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
+font-family:Arial;
 }
 
 body{
 background:#050816;
-font-family:Arial;
 overflow:hidden;
 color:white;
 }
@@ -30,13 +32,23 @@ background:
 radial-gradient(circle at center,
 rgba(0,255,255,0.08),
 transparent 60%);
-animation:bg 6s infinite;
+animation:bgPulse 6s infinite;
 }
 
-@keyframes bg{
-0%{transform:scale(1);}
-50%{transform:scale(1.05);}
-100%{transform:scale(1);}
+@keyframes bgPulse{
+
+0%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.05);
+}
+
+100%{
+transform:scale(1);
+}
+
 }
 
 /* TOP */
@@ -46,11 +58,13 @@ position:absolute;
 top:20px;
 width:100%;
 text-align:center;
+z-index:10;
 }
 
 .logo{
-font-size:28px;
+font-size:30px;
 font-weight:bold;
+letter-spacing:2px;
 color:#00E5FF;
 text-shadow:0 0 15px #00E5FF;
 }
@@ -77,13 +91,46 @@ align-items:center;
 
 box-shadow:
 0 0 40px rgba(0,229,255,0.2),
-inset 0 0 30px rgba(0,229,255,0.1);
+inset 0 0 30px rgba(0,229,255,0.08);
 }
 
 .avatar{
 width:180px;
-transition:0.1s;
-filter:drop-shadow(0 0 15px #00E5FF);
+transition:0.12s;
+filter:drop-shadow(0 0 20px #00E5FF);
+}
+
+/* WAVES */
+
+.wave{
+position:absolute;
+width:280px;
+height:280px;
+border-radius:50%;
+border:1px solid rgba(0,229,255,0.08);
+animation:wave 4s infinite;
+}
+
+.wave:nth-child(2){
+animation-delay:1s;
+}
+
+.wave:nth-child(3){
+animation-delay:2s;
+}
+
+@keyframes wave{
+
+from{
+transform:scale(0.7);
+opacity:1;
+}
+
+to{
+transform:scale(1.4);
+opacity:0;
+}
+
 }
 
 /* CHAT */
@@ -120,14 +167,17 @@ border:1px solid rgba(0,229,255,0.2);
 }
 
 @keyframes fade{
+
 from{
 opacity:0;
 transform:translateY(10px);
 }
+
 to{
 opacity:1;
 transform:translateY(0);
 }
+
 }
 
 /* INPUT */
@@ -152,11 +202,33 @@ outline:none;
 }
 
 button{
-padding:14px 18px;
 border:none;
+padding:14px 18px;
 border-radius:14px;
 background:#00E5FF;
 font-weight:bold;
+}
+
+/* THINKING */
+
+.thinking{
+animation:thinking 1s infinite;
+}
+
+@keyframes thinking{
+
+0%{
+opacity:0.5;
+}
+
+50%{
+opacity:1;
+}
+
+100%{
+opacity:0.5;
+}
+
 }
 
 </style>
@@ -167,14 +239,22 @@ font-weight:bold;
 <div class="bg"></div>
 
 <div class="top">
-<div class="logo">TG.AI</div>
+
+<div class="logo">
+TG.AI
+</div>
 
 <div class="status" id="status">
 SYSTEM READY
 </div>
+
 </div>
 
 <div class="avatarBox">
+
+<div class="wave"></div>
+<div class="wave"></div>
+<div class="wave"></div>
 
 <img
 id="avatar"
@@ -183,7 +263,10 @@ src="https://i.imgur.com/Z7AzH2c.png">
 
 </div>
 
-<div class="chat" id="chat"></div>
+<div
+class="chat"
+id="chat">
+</div>
 
 <div class="inputBox">
 
@@ -205,57 +288,59 @@ Gửi
 
 const TG = {
 
-// 🔥 DÁN API KEY OPENROUTER
-apiKey:"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",
+/* 🔥 DÁN GROQ API KEY */
 
-model:
-"mistralai/mistral-7b-instruct:free",
+apiKey:"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",
+
+model:"llama3-8b-8192",
+
+memory:[],
 
 add(text,type){
 
-let msg=
+let msg =
 document.createElement("div");
 
-msg.className=
+msg.className =
 "msg "+type;
 
-msg.innerText=text;
+msg.innerText = text;
 
 document
 .getElementById("chat")
 .appendChild(msg);
 
-chat.scrollTop=
+chat.scrollTop =
 chat.scrollHeight;
 },
 
 speak(text){
 
-let tts=
+let tts =
 new SpeechSynthesisUtterance(text);
 
-tts.lang="vi-VN";
+tts.lang = "vi-VN";
 
-tts.rate=0.95;
+tts.rate = 0.95;
 
-tts.pitch=1.08;
+tts.pitch = 1.08;
 
-let avatar=
+let avatar =
 document.getElementById("avatar");
 
-let interval=
+let interval =
 setInterval(()=>{
 
-avatar.style.transform=
+avatar.style.transform =
 `scale(${1+Math.random()*0.03})`;
 
 },120);
 
-tts.onend=()=>{
+tts.onend = ()=>{
 
 clearInterval(interval);
 
-avatar.style.transform=
+avatar.style.transform =
 "scale(1)";
 };
 
@@ -268,9 +353,14 @@ async askAI(text){
 
 try{
 
+document
+.getElementById("status")
+.innerText =
+"THINKING...";
+
 let response =
 await fetch(
-"https://openrouter.ai/api/v1/chat/completions",
+"https://api.groq.com/openai/v1/chat/completions",
 {
 
 method:"POST",
@@ -294,19 +384,32 @@ messages:[
 role:"system",
 
 content:
-"Bạn là TG.AI. Bình tĩnh. Ngắn gọn. Có chiều sâu."
+`
+Bạn là TG.AI.
+
+Phong cách:
+- Bình tĩnh
+- Chính xác
+- Ngắn gọn
+- Có chiều sâu
+- Gaming + Studio vibe
+`
 },
+
+...this.memory,
 
 {
 role:"user",
-
 content:text
 }
+
 ]
+
 })
+
 });
 
-let data=
+let data =
 await response.json();
 
 console.log(data);
@@ -322,14 +425,34 @@ if(!data.choices){
 return "AI không phản hồi.";
 }
 
-return data
-.choices[0]
+let reply =
+data.choices[0]
 .message.content;
+
+this.memory.push({
+role:"user",
+content:text
+});
+
+this.memory.push({
+role:"assistant",
+content:reply
+});
+
+if(this.memory.length > 10){
+
+this.memory.splice(0,2);
+}
+
+return reply;
 
 }catch(e){
 
-return "FETCH ERROR";
+console.log(e);
+
+return "Lỗi kết nối.";
 }
+
 }
 
 };
@@ -338,27 +461,20 @@ return "FETCH ERROR";
 
 async function send(){
 
-let input=
+let input =
 document.getElementById("input");
 
-let text=
+let text =
 input.value.trim();
 
 if(!text) return;
 
 TG.add(text,"user");
 
-document
-.getElementById("status")
-.innerText=
-"THINKING...";
+input.value = "";
 
-input.value="";
-
-let reply=
+let reply =
 await TG.askAI(text);
-
-setTimeout(()=>{
 
 TG.add(reply,"bot");
 
@@ -366,40 +482,40 @@ TG.speak(reply);
 
 document
 .getElementById("status")
-.innerText=
+.innerText =
 "ACTIVE";
-
-},300);
 }
 
 /* VOICE */
 
 function voice(){
 
-if(!(
+if(
+!(
 'webkitSpeechRecognition'
 in window
-)){
+)
+){
 
 alert("Không hỗ trợ voice");
 
 return;
 }
 
-let rec=
+let rec =
 new webkitSpeechRecognition();
 
-rec.lang="vi-VN";
+rec.lang = "vi-VN";
 
-rec.onresult=(e)=>{
+rec.onresult = (e)=>{
 
-let text=
+let text =
 e.results[0][0]
 .transcript;
 
 document
 .getElementById("input")
-.value=text;
+.value = text;
 
 send();
 };
@@ -407,18 +523,34 @@ send();
 rec.start();
 }
 
+/* ENTER */
+
+document
+.getElementById("input")
+.addEventListener(
+"keypress",
+function(e){
+
+if(e.key==="Enter"){
+
+send();
+}
+
+}
+);
+
 /* BLINK */
 
 setInterval(()=>{
 
-let avatar=
+let avatar =
 document.getElementById("avatar");
 
-avatar.style.opacity=0.4;
+avatar.style.opacity = 0.4;
 
 setTimeout(()=>{
 
-avatar.style.opacity=1;
+avatar.style.opacity = 1;
 
 },120);
 
