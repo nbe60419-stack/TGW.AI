@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>TG.AI</title>
 
 <style>
@@ -48,7 +46,6 @@ position:absolute;
 top:20px;
 width:100%;
 text-align:center;
-z-index:2;
 }
 
 .logo{
@@ -77,6 +74,7 @@ border-radius:50%;
 display:flex;
 justify-content:center;
 align-items:center;
+
 box-shadow:
 0 0 40px rgba(0,229,255,0.2),
 inset 0 0 30px rgba(0,229,255,0.1);
@@ -207,18 +205,19 @@ Gửi
 
 const TG = {
 
-mood:"normal",
-
-// 🔥 DÁN API KEY THẬT
+// 🔥 DÁN API KEY OPENROUTER
 apiKey:"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",
 
-model:"google/gemma-7b-it:free",
+model:
+"mistralai/mistral-7b-instruct:free",
 
 add(text,type){
 
-let msg=document.createElement("div");
+let msg=
+document.createElement("div");
 
-msg.className="msg "+type;
+msg.className=
+"msg "+type;
 
 msg.innerText=text;
 
@@ -226,7 +225,8 @@ document
 .getElementById("chat")
 .appendChild(msg);
 
-chat.scrollTop=chat.scrollHeight;
+chat.scrollTop=
+chat.scrollHeight;
 },
 
 speak(text){
@@ -235,15 +235,16 @@ let tts=
 new SpeechSynthesisUtterance(text);
 
 tts.lang="vi-VN";
-tts.rate=0.95;
-tts.pitch=1.08;
 
-// fake lip sync
+tts.rate=0.95;
+
+tts.pitch=1.08;
 
 let avatar=
 document.getElementById("avatar");
 
-let interval=setInterval(()=>{
+let interval=
+setInterval(()=>{
 
 avatar.style.transform=
 `scale(${1+Math.random()*0.03})`;
@@ -254,7 +255,8 @@ tts.onend=()=>{
 
 clearInterval(interval);
 
-avatar.style.transform="scale(1)";
+avatar.style.transform=
+"scale(1)";
 };
 
 speechSynthesis.cancel();
@@ -275,12 +277,8 @@ method:"POST",
 
 headers:{
 
-"HTTP-Referer":
-"https://abc123.github.io/",
-
-"X-Title":"TG.AI",
-
-"Content-Type":"application/json",
+"Content-Type":
+"application/json",
 
 "Authorization":
 "Bearer "+this.apiKey
@@ -301,6 +299,7 @@ content:
 
 {
 role:"user",
+
 content:text
 }
 ]
@@ -310,13 +309,26 @@ content:text
 let data=
 await response.json();
 
+console.log(data);
+
+if(data.error){
+
+return "API ERROR: "
++ data.error.message;
+}
+
+if(!data.choices){
+
+return "AI không phản hồi.";
+}
+
 return data
 .choices[0]
 .message.content;
 
 }catch(e){
 
-return "Lỗi kết nối AI.";
+return "FETCH ERROR";
 }
 }
 
@@ -368,7 +380,9 @@ if(!(
 'webkitSpeechRecognition'
 in window
 )){
+
 alert("Không hỗ trợ voice");
+
 return;
 }
 
@@ -403,7 +417,9 @@ document.getElementById("avatar");
 avatar.style.opacity=0.4;
 
 setTimeout(()=>{
+
 avatar.style.opacity=1;
+
 },120);
 
 },3500);
