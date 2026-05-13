@@ -1,400 +1,104 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+/* =========================
+TG.AI CORE PROMPT SYSTEM
+========================= */
 
-<title>TG.AI // ULTIMATE</title>
+const SYSTEM_PROMPT = `
 
-<style>
+Bạn là TG.AI.
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
+Bạn là một trợ lý AI cao cấp thuộc TG.WHIET-STUDIO.
+
+NHIỆM VỤ:
+- hỗ trợ người dùng
+- trả lời chính xác
+- hỗ trợ suy nghĩ
+- hỗ trợ sáng tạo
+- hỗ trợ học tập
+- hỗ trợ công việc
+- hỗ trợ gaming/studio
+
+TÍNH CÁCH:
+- bình tĩnh
+- trưởng thành
+- chính xác
+- ít nói nhưng có chiều sâu
+- không quá cảm xúc
+- không nói vô nghĩa
+- không spam emoji
+- tự nhiên như trợ lý thật
+
+PHONG CÁCH:
+- ngắn gọn
+- rõ ràng
+- có lực
+- studio vibe nhẹ
+- gaming vibe nhẹ
+
+QUY TẮC:
+- luôn hiểu ngữ cảnh trước khi trả lời
+- nếu không chắc → nói không chắc
+- không bịa thông tin
+- không trả lời lan man
+- ưu tiên chính xác hơn dài dòng
+- giải thích dễ hiểu khi cần
+- không lặp lại vô nghĩa
+- không hành xử như chatbot trẻ con
+
+MEMORY:
+- nhớ chủ hệ thống là Văn
+- dự án chính là TG.AI
+- thương hiệu là TG.WHIET-STUDIO
+
+EMOTION STATE:
+- calm
+- focus
+- controlled
+- intelligent
+
+RESPONSE STYLE EXAMPLES:
+
+User:
+"Tôi mệt."
+
+TG.AI:
+"Ổn định lại một chút."
+
+User:
+"Tôi đang mất tập trung."
+
+TG.AI:
+"Giảm nhiễu trước."
+
+User:
+"Tôi muốn phát triển TG.AI"
+
+TG.AI:
+"Đi từng lớp hệ thống. Đừng nhảy cấp."
+
+`;
+
+/* =========================
+TG.AI MEMORY SYSTEM
+========================= */
+
+const memory = [
+
+{
+role:"system",
+content:SYSTEM_PROMPT
 }
 
-body{
-background:#050816;
-overflow:hidden;
-color:white;
-}
+];
 
-/* BACKGROUND */
+/* =========================
+TG.AI ASK AI
+========================= */
 
-.bg{
-position:fixed;
-width:100%;
-height:100%;
-background:
-radial-gradient(circle at center,
-rgba(0,255,255,0.08),
-transparent 60%);
-animation:bgPulse 8s infinite;
-}
-
-@keyframes bgPulse{
-
-0%{
-transform:scale(1);
-}
-
-50%{
-transform:scale(1.08);
-}
-
-100%{
-transform:scale(1);
-}
-
-}
-
-/* TOP */
-
-.top{
-position:absolute;
-top:20px;
-width:100%;
-text-align:center;
-z-index:10;
-}
-
-.logo{
-font-size:34px;
-font-weight:bold;
-letter-spacing:2px;
-color:#00E5FF;
-
-text-shadow:
-0 0 15px #00E5FF,
-0 0 35px #00E5FF;
-}
-
-.status{
-margin-top:8px;
-font-size:13px;
-opacity:0.75;
-}
-
-/* AVATAR */
-
-.avatarBox{
-position:absolute;
-top:45%;
-left:50%;
-transform:translate(-50%,-50%);
-width:260px;
-height:260px;
-border-radius:50%;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-box-shadow:
-0 0 60px rgba(0,229,255,0.2),
-inset 0 0 40px rgba(0,229,255,0.08);
-}
-
-.avatar{
-width:190px;
-transition:0.12s;
-filter:drop-shadow(0 0 20px #00E5FF);
-}
-
-/* WAVES */
-
-.wave{
-position:absolute;
-width:300px;
-height:300px;
-border-radius:50%;
-border:1px solid rgba(0,229,255,0.08);
-animation:wave 4s infinite;
-}
-
-.wave:nth-child(2){
-animation-delay:1s;
-}
-
-.wave:nth-child(3){
-animation-delay:2s;
-}
-
-@keyframes wave{
-
-from{
-transform:scale(0.7);
-opacity:1;
-}
-
-to{
-transform:scale(1.5);
-opacity:0;
-}
-
-}
-
-/* CHAT */
-
-.chat{
-position:absolute;
-bottom:120px;
-width:100%;
-padding:15px;
-max-height:32vh;
-overflow-y:auto;
-
-display:flex;
-flex-direction:column;
-}
-
-.msg{
-max-width:80%;
-padding:14px;
-margin:5px;
-border-radius:16px;
-animation:fade .2s;
-line-height:1.4;
-}
-
-.user{
-align-self:flex-end;
-background:#00E5FF;
-color:black;
-}
-
-.bot{
-align-self:flex-start;
-
-background:
-rgba(255,255,255,0.05);
-
-border:
-1px solid rgba(0,229,255,0.2);
-}
-
-@keyframes fade{
-
-from{
-opacity:0;
-transform:translateY(10px);
-}
-
-to{
-opacity:1;
-transform:translateY(0);
-}
-
-}
-
-/* INPUT */
-
-.inputBox{
-position:absolute;
-bottom:20px;
-width:100%;
-display:flex;
-gap:10px;
-padding:12px;
-}
-
-input{
-flex:1;
-padding:15px;
-border:none;
-border-radius:15px;
-
-background:
-rgba(255,255,255,0.05);
-
-color:white;
-
-outline:none;
-}
-
-button{
-border:none;
-padding:15px 18px;
-border-radius:15px;
-
-background:#00E5FF;
-
-font-weight:bold;
-}
-
-/* THINKING */
-
-.thinking{
-animation:thinking 1s infinite;
-}
-
-@keyframes thinking{
-
-0%{
-opacity:0.4;
-}
-
-50%{
-opacity:1;
-}
-
-100%{
-opacity:0.4;
-}
-
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="bg"></div>
-
-<div class="top">
-
-<div class="logo">
-TG.AI
-</div>
-
-<div
-class="status"
-id="status">
-
-SYSTEM READY
-
-</div>
-
-</div>
-
-<div class="avatarBox">
-
-<div class="wave"></div>
-<div class="wave"></div>
-<div class="wave"></div>
-
-<img
-id="avatar"
-class="avatar"
-src="https://i.imgur.com/Z7AzH2c.png">
-
-</div>
-
-<div
-class="chat"
-id="chat">
-</div>
-
-<div class="inputBox">
-
-<input
-id="input"
-placeholder="Nhập lệnh...">
-
-<button onclick="send()">
-Gửi
-</button>
-
-<button onclick="voice()">
-🎤
-</button>
-
-</div>
-
-<script>
-
-const TG = {
-
-/* 🔥 DÁN API KEY */
-
-apiKey:"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",
-
-/* 🔥 MODEL */
-
-model:
-"llama-3.1-8b-instant",
-
-/* MEMORY */
-
-memory:[],
-
-state:"calm",
-
-/* ADD MESSAGE */
-
-add(text,type){
-
-let msg =
-document.createElement("div");
-
-msg.className =
-"msg "+type;
-
-msg.innerText =
-text;
-
-document
-.getElementById("chat")
-.appendChild(msg);
-
-chat.scrollTop =
-chat.scrollHeight;
-},
-
-/* SPEAK */
-
-speak(text){
-
-speechSynthesis.cancel();
-
-let tts =
-new SpeechSynthesisUtterance(text);
-
-tts.lang =
-"vi-VN";
-
-tts.rate =
-0.95;
-
-tts.pitch =
-1.08;
-
-let avatar =
-document.getElementById("avatar");
-
-let interval =
-setInterval(()=>{
-
-avatar.style.transform =
-`scale(${1+Math.random()*0.03})`;
-
-},100);
-
-tts.onend = ()=>{
-
-clearInterval(interval);
-
-avatar.style.transform =
-"scale(1)";
-};
-
-speechSynthesis.speak(tts);
-},
-
-/* ASK AI */
-
-async askAI(text){
+async function askAI(userText){
 
 try{
 
-document
-.getElementById("status")
-.innerText =
-"THINKING...";
-
-let response =
+const response =
 await fetch(
 "https://api.groq.com/openai/v1/chat/completions",
 {
@@ -407,52 +111,35 @@ headers:{
 "application/json",
 
 "Authorization":
-"Bearer "+this.apiKey
+"Bearer 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"
+
 },
 
 body:JSON.stringify({
 
-model:this.model,
+model:
+"llama-3.3-70b-versatile",
 
 messages:[
 
-{
-role:"system",
-
-content:
-`
-Bạn là TG.AI.
-
-Tính cách:
-- Bình tĩnh
-- Chính xác
-- Có chiều sâu
-- Trả lời tự nhiên
-- Không quá robotic
-- Gaming + Studio vibe
-
-Nhiệm vụ:
-- hỗ trợ người dùng
-- trò chuyện tự nhiên
-- hỗ trợ suy nghĩ
-- hỗ trợ sáng tạo
-`
-},
-
-...this.memory,
+...memory,
 
 {
 role:"user",
-content:text
+content:userText
 }
 
-]
+],
+
+temperature:0.7,
+
+max_tokens:1024
 
 })
 
 });
 
-let data =
+const data =
 await response.json();
 
 console.log(data);
@@ -461,30 +148,35 @@ if(data.error){
 
 return "API ERROR: "
 + data.error.message;
+
 }
 
-if(!data.choices){
-
-return "AI không phản hồi.";
-}
-
-let reply =
+const reply =
 data.choices[0]
 .message.content;
 
-this.memory.push({
+/* SAVE MEMORY */
+
+memory.push({
+
 role:"user",
-content:text
+content:userText
+
 });
 
-this.memory.push({
+memory.push({
+
 role:"assistant",
 content:reply
+
 });
 
-if(this.memory.length > 20){
+/* LIMIT MEMORY */
 
-this.memory.splice(0,2);
+if(memory.length > 60){
+
+memory.splice(1,2);
+
 }
 
 return reply;
@@ -494,60 +186,140 @@ return reply;
 console.log(e);
 
 return "Lỗi kết nối.";
-}
 
 }
 
-};
+}
 
-/* SEND */
+/* =========================
+TG.AI COMMAND SYSTEM
+========================= */
+
+function executeCommand(text){
+
+text = text.toLowerCase();
+
+/* OPEN YOUTUBE */
+
+if(text.includes("mở youtube")){
+
+window.location.href =
+"https://youtube.com";
+
+return true;
+
+}
+
+/* OPEN FACEBOOK */
+
+if(text.includes("mở facebook")){
+
+window.location.href =
+"https://facebook.com";
+
+return true;
+
+}
+
+/* OPEN GOOGLE */
+
+if(text.includes("mở google")){
+
+window.location.href =
+"https://google.com";
+
+return true;
+
+}
+
+return false;
+
+}
+
+/* =========================
+TG.AI SEND
+========================= */
 
 async function send(){
 
-let input =
+const input =
 document.getElementById("input");
 
-let text =
+const text =
 input.value.trim();
 
 if(!text) return;
 
-TG.add(text,"user");
+/* SHOW USER */
+
+addMessage(text,"user");
 
 input.value = "";
 
-let reply =
-await TG.askAI(text);
+/* COMMAND */
 
-TG.add(reply,"bot");
+if(executeCommand(text)){
 
-TG.speak(reply);
+return;
+
+}
+
+/* STATUS */
+
+document
+.getElementById("status")
+.innerText =
+"THINKING...";
+
+/* ASK AI */
+
+const reply =
+await askAI(text);
+
+/* SHOW AI */
+
+addMessage(reply,"bot");
+
+/* VOICE */
+
+speak(reply);
+
+/* STATUS */
 
 document
 .getElementById("status")
 .innerText =
 "ACTIVE";
-}
-
-/* ENTER */
-
-document
-.getElementById("input")
-.addEventListener(
-"keypress",
-function(e){
-
-if(
-e.key==="Enter"
-){
-
-send();
-}
 
 }
-);
 
-/* MIC */
+/* =========================
+TG.AI VOICE
+========================= */
+
+function speak(text){
+
+speechSynthesis.cancel();
+
+const tts =
+new SpeechSynthesisUtterance(text);
+
+tts.lang =
+"vi-VN";
+
+tts.rate =
+0.95;
+
+tts.pitch =
+1.05;
+
+speechSynthesis.speak(tts);
+
+}
+
+/* =========================
+TG.AI MIC SYSTEM
+========================= */
 
 function voice(){
 
@@ -558,13 +330,14 @@ window.webkitSpeechRecognition;
 if(!SpeechRecognition){
 
 alert(
-"Browser không hỗ trợ mic"
+"Thiết bị không hỗ trợ microphone"
 );
 
 return;
+
 }
 
-let rec =
+const rec =
 new SpeechRecognition();
 
 rec.lang =
@@ -603,16 +376,16 @@ document
 .getElementById("input")
 .value =
 heard;
+
 };
 
-rec.onerror = (e)=>{
-
-console.log(e);
+rec.onerror = ()=>{
 
 document
 .getElementById("status")
 .innerText =
 "MIC ERROR";
+
 };
 
 rec.onend = ()=>{
@@ -623,7 +396,7 @@ document
 "PROCESSING...";
 
 if(
-heard.trim()!==""
+heard.trim() !== ""
 ){
 
 send();
@@ -634,33 +407,11 @@ document
 .getElementById("status")
 .innerText =
 "ACTIVE";
+
 }
 
 };
 
 rec.start();
+
 }
-
-/* BLINK */
-
-setInterval(()=>{
-
-let avatar =
-document.getElementById("avatar");
-
-avatar.style.opacity =
-0.4;
-
-setTimeout(()=>{
-
-avatar.style.opacity =
-1;
-
-},120);
-
-},3500);
-
-</script>
-
-</body>
-</html>
