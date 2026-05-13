@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>TG.AI</title>
+<title>TG.AI // ULTIMATE</title>
 
 <style>
 
@@ -32,7 +31,7 @@ background:
 radial-gradient(circle at center,
 rgba(0,255,255,0.08),
 transparent 60%);
-animation:bgPulse 6s infinite;
+animation:bgPulse 8s infinite;
 }
 
 @keyframes bgPulse{
@@ -42,7 +41,7 @@ transform:scale(1);
 }
 
 50%{
-transform:scale(1.05);
+transform:scale(1.08);
 }
 
 100%{
@@ -62,40 +61,44 @@ z-index:10;
 }
 
 .logo{
-font-size:30px;
+font-size:34px;
 font-weight:bold;
 letter-spacing:2px;
 color:#00E5FF;
-text-shadow:0 0 15px #00E5FF;
+
+text-shadow:
+0 0 15px #00E5FF,
+0 0 35px #00E5FF;
 }
 
 .status{
-margin-top:5px;
+margin-top:8px;
 font-size:13px;
-opacity:0.7;
+opacity:0.75;
 }
 
 /* AVATAR */
 
 .avatarBox{
 position:absolute;
-top:50%;
+top:45%;
 left:50%;
-transform:translate(-50%,-55%);
-width:240px;
-height:240px;
+transform:translate(-50%,-50%);
+width:260px;
+height:260px;
 border-radius:50%;
+
 display:flex;
 justify-content:center;
 align-items:center;
 
 box-shadow:
-0 0 40px rgba(0,229,255,0.2),
-inset 0 0 30px rgba(0,229,255,0.08);
+0 0 60px rgba(0,229,255,0.2),
+inset 0 0 40px rgba(0,229,255,0.08);
 }
 
 .avatar{
-width:180px;
+width:190px;
 transition:0.12s;
 filter:drop-shadow(0 0 20px #00E5FF);
 }
@@ -104,8 +107,8 @@ filter:drop-shadow(0 0 20px #00E5FF);
 
 .wave{
 position:absolute;
-width:280px;
-height:280px;
+width:300px;
+height:300px;
 border-radius:50%;
 border:1px solid rgba(0,229,255,0.08);
 animation:wave 4s infinite;
@@ -127,7 +130,7 @@ opacity:1;
 }
 
 to{
-transform:scale(1.4);
+transform:scale(1.5);
 opacity:0;
 }
 
@@ -137,21 +140,23 @@ opacity:0;
 
 .chat{
 position:absolute;
-bottom:110px;
+bottom:120px;
 width:100%;
 padding:15px;
-max-height:30vh;
+max-height:32vh;
 overflow-y:auto;
+
 display:flex;
 flex-direction:column;
 }
 
 .msg{
-max-width:75%;
-padding:12px;
+max-width:80%;
+padding:14px;
 margin:5px;
-border-radius:15px;
+border-radius:16px;
 animation:fade .2s;
+line-height:1.4;
 }
 
 .user{
@@ -162,8 +167,12 @@ color:black;
 
 .bot{
 align-self:flex-start;
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(0,229,255,0.2);
+
+background:
+rgba(255,255,255,0.05);
+
+border:
+1px solid rgba(0,229,255,0.2);
 }
 
 @keyframes fade{
@@ -193,19 +202,25 @@ padding:12px;
 
 input{
 flex:1;
-padding:14px;
+padding:15px;
 border:none;
-border-radius:14px;
-background:rgba(255,255,255,0.05);
+border-radius:15px;
+
+background:
+rgba(255,255,255,0.05);
+
 color:white;
+
 outline:none;
 }
 
 button{
 border:none;
-padding:14px 18px;
-border-radius:14px;
+padding:15px 18px;
+border-radius:15px;
+
 background:#00E5FF;
+
 font-weight:bold;
 }
 
@@ -218,7 +233,7 @@ animation:thinking 1s infinite;
 @keyframes thinking{
 
 0%{
-opacity:0.5;
+opacity:0.4;
 }
 
 50%{
@@ -226,7 +241,7 @@ opacity:1;
 }
 
 100%{
-opacity:0.5;
+opacity:0.4;
 }
 
 }
@@ -244,8 +259,12 @@ opacity:0.5;
 TG.AI
 </div>
 
-<div class="status" id="status">
+<div
+class="status"
+id="status">
+
 SYSTEM READY
+
 </div>
 
 </div>
@@ -288,13 +307,22 @@ Gửi
 
 const TG = {
 
-/* 🔥 DÁN GROQ API KEY */
+/* 🔥 DÁN API KEY */
 
 apiKey:"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",
 
-model:"llama-3.1-8b-instant",
+/* 🔥 MODEL */
+
+model:
+"llama-3.1-8b-instant",
+
+/* MEMORY */
 
 memory:[],
+
+state:"calm",
+
+/* ADD MESSAGE */
 
 add(text,type){
 
@@ -304,7 +332,8 @@ document.createElement("div");
 msg.className =
 "msg "+type;
 
-msg.innerText = text;
+msg.innerText =
+text;
 
 document
 .getElementById("chat")
@@ -314,16 +343,23 @@ chat.scrollTop =
 chat.scrollHeight;
 },
 
+/* SPEAK */
+
 speak(text){
+
+speechSynthesis.cancel();
 
 let tts =
 new SpeechSynthesisUtterance(text);
 
-tts.lang = "vi-VN";
+tts.lang =
+"vi-VN";
 
-tts.rate = 0.95;
+tts.rate =
+0.95;
 
-tts.pitch = 1.08;
+tts.pitch =
+1.08;
 
 let avatar =
 document.getElementById("avatar");
@@ -334,7 +370,7 @@ setInterval(()=>{
 avatar.style.transform =
 `scale(${1+Math.random()*0.03})`;
 
-},120);
+},100);
 
 tts.onend = ()=>{
 
@@ -344,10 +380,10 @@ avatar.style.transform =
 "scale(1)";
 };
 
-speechSynthesis.cancel();
-
 speechSynthesis.speak(tts);
 },
+
+/* ASK AI */
 
 async askAI(text){
 
@@ -387,12 +423,19 @@ content:
 `
 Bạn là TG.AI.
 
-Phong cách:
+Tính cách:
 - Bình tĩnh
 - Chính xác
-- Ngắn gọn
 - Có chiều sâu
+- Trả lời tự nhiên
+- Không quá robotic
 - Gaming + Studio vibe
+
+Nhiệm vụ:
+- hỗ trợ người dùng
+- trò chuyện tự nhiên
+- hỗ trợ suy nghĩ
+- hỗ trợ sáng tạo
 `
 },
 
@@ -439,7 +482,7 @@ role:"assistant",
 content:reply
 });
 
-if(this.memory.length > 10){
+if(this.memory.length > 20){
 
 this.memory.splice(0,2);
 }
@@ -486,43 +529,6 @@ document
 "ACTIVE";
 }
 
-/* VOICE */
-
-function voice(){
-
-if(
-!(
-'webkitSpeechRecognition'
-in window
-)
-){
-
-alert("Không hỗ trợ voice");
-
-return;
-}
-
-let rec =
-new webkitSpeechRecognition();
-
-rec.lang = "vi-VN";
-
-rec.onresult = (e)=>{
-
-let text =
-e.results[0][0]
-.transcript;
-
-document
-.getElementById("input")
-.value = text;
-
-send();
-};
-
-rec.start();
-}
-
 /* ENTER */
 
 document
@@ -531,13 +537,109 @@ document
 "keypress",
 function(e){
 
-if(e.key==="Enter"){
+if(
+e.key==="Enter"
+){
 
 send();
 }
 
 }
 );
+
+/* MIC */
+
+function voice(){
+
+const SpeechRecognition =
+window.SpeechRecognition ||
+window.webkitSpeechRecognition;
+
+if(!SpeechRecognition){
+
+alert(
+"Browser không hỗ trợ mic"
+);
+
+return;
+}
+
+let rec =
+new SpeechRecognition();
+
+rec.lang =
+"vi-VN";
+
+rec.continuous =
+false;
+
+rec.interimResults =
+true;
+
+document
+.getElementById("status")
+.innerText =
+"LISTENING...";
+
+let heard = "";
+
+rec.onresult = (e)=>{
+
+heard = "";
+
+for(
+let i=0;
+i<e.results.length;
+i++
+){
+
+heard +=
+e.results[i][0]
+.transcript;
+
+}
+
+document
+.getElementById("input")
+.value =
+heard;
+};
+
+rec.onerror = (e)=>{
+
+console.log(e);
+
+document
+.getElementById("status")
+.innerText =
+"MIC ERROR";
+};
+
+rec.onend = ()=>{
+
+document
+.getElementById("status")
+.innerText =
+"PROCESSING...";
+
+if(
+heard.trim()!==""
+){
+
+send();
+
+}else{
+
+document
+.getElementById("status")
+.innerText =
+"ACTIVE";
+}
+
+};
+
+rec.start();
+}
 
 /* BLINK */
 
@@ -546,11 +648,13 @@ setInterval(()=>{
 let avatar =
 document.getElementById("avatar");
 
-avatar.style.opacity = 0.4;
+avatar.style.opacity =
+0.4;
 
 setTimeout(()=>{
 
-avatar.style.opacity = 1;
+avatar.style.opacity =
+1;
 
 },120);
 
